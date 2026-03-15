@@ -1,0 +1,30 @@
+name: Build Lichee Nano SD image
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Build Docker image
+        run: docker build . --file docker/Dockerfile --tag lichee-builder:latest
+
+      - name: Build SD image
+        run: |
+          docker run --rm -v $(pwd):/output lichee-builder:latest \
+            cp /build/sdcard.img /output/sdcard.img
+
+      - name: Upload sdcard.img
+        uses: actions/upload-artifact@v4
+        with:
+          name: sdcard-img
+          path: sdcard.img
+          retention-days: 5
