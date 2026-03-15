@@ -17,11 +17,9 @@ jobs:
       - name: Build Docker image
         run: docker build . --file docker/Dockerfile --tag lichee-builder:latest
 
-      - name: Build SD image
-        run: |
-          docker run --rm -v $(pwd):/output lichee-builder:latest \
-            cp /build/sdcard.img /output/sdcard.img
-
+      - name: Build Docker image
+        run: docker build ./docker --file docker/Dockerfile --tag lichee-builder:latest
+        
       - name: Upload sdcard.img
         uses: actions/upload-artifact@v4
         with:
