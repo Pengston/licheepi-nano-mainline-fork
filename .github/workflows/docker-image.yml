@@ -18,7 +18,9 @@ jobs:
         run: docker build . --file docker/Dockerfile --tag lichee-builder:latest
 
       - name: Build Docker image
-        run: docker build --no-cache ./docker --file docker/Dockerfile --tag lichee-builder:latest
+        run: |
+          cp docker/br-build.sh br-build.sh
+          docker build --no-cache -f docker/Dockerfile --build-arg USERNAME=builder --build-arg UID=1000 . --tag lichee-builder:latest
         
       - name: Upload sdcard.img
         uses: actions/upload-artifact@v4
